@@ -1,0 +1,10 @@
+services:
+  kodi-repo-server:
+    image: ghcr.io/M4RC-XX/kodi-repo-server-docker:latest
+    container_name: kodi-repo-server
+    ports:
+      - "80:80"
+    volumes:
+      - /home/pi/kodi-repository:/app
+    user: "${UID}:${GID}"
+    restart: unless-stopped
