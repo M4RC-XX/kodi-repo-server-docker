@@ -1,6 +1,6 @@
 services:
   kodi-repo-server:
-    image: ghcr.io/M4RC-XX/kodi-repo-server-docker:latest
+    image: ghcr.io/m4rc-xx/kodi-repo-server-docker:latest
     container_name: kodi-repo-server
     ports:
       - "80:80"
