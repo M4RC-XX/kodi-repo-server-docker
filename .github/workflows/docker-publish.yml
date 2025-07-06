@@ -26,12 +26,16 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Schritt 3: Docker-Image bauen und auf ghcr.io veröffentlichen
+      # Schritt 3: Kleingeschriebenen Tag-Namen erstellen
+      - name: Generate lower-case tag
+        id: lower_case_tag
+        run: echo "TAG_LC=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
+      # Schritt 4: Docker-Image bauen und auf ghcr.io veröffentlichen
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
           context: .
           push: true
-          # Taggt das Image mit dem Namen Ihres Repositories
-          # Beispiel: ghcr.io/ihr-benutzername/ihr-projektname:latest
-          tags: ghcr.io/${{ github.repository }}:latest
+          # Taggt das Image mit dem kleingeschriebenen Namen
+          tags: ghcr.io/${{ env.TAG_LC }}:latest
