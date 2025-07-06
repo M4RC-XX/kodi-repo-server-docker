@@ -59,7 +59,8 @@ services:
     restart: unless-stopped
 ```
 
-## ⁉️ How It Works
+⁉️ How It Works
+----------------------
 
 This project automates your entire Kodi repository workflow. Here's the simple, step-by-step process:
 1. **Add an Addon:** Copy your addon .zip file into the input folder.
