@@ -12,6 +12,11 @@ jobs:
     # Führt den Job auf einem von GitHub gehosteten Runner aus
     runs-on: ubuntu-latest
 
+    # *** KORREKTUR: Explizite Berechtigungen für den Job definieren ***
+    permissions:
+      contents: read
+      packages: write
+
     steps:
       # Schritt 1: Code aus dem Repository auschecken
       - name: Checkout repository
