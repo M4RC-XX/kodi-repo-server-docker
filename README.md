@@ -20,7 +20,7 @@ This project provides a fully automated, Docker-powered server to host and manag
 *   [Docker](https://www.docker.com/get-started) 
 *   [Docker](https://docs.docker.com/compose/install/) Compose
 
-## ⬇️ Download / Install
+## ⬇️ Option 1: Download & Compile
 ```
 # Clone repo
 git clone https://github.com/m4rc-xx/kodi-repo-server-docker/
@@ -40,6 +40,23 @@ docker run -d \
   --name mein-kodi-repo \
   --restart unless-stopped \
   kodi-repo-server
+```
+
+## ⬇️ Option 2: Docker-Compose
+```
+services:
+  kodi-repo-server:
+    image: ghcr.io/m4rc-xx/kodi-repo-server-docker:latest
+    container_name: kodi-repo-server
+    ports:
+      - "80:80"
+    volumes:
+      - /home/pi/kodi-repository/input:/app/input
+      - /home/pi/kodi-repository/addons:/app/addons
+      - /home/pi/kodi-repository/web:/app/web
+      - /home/pi/kodi-repository/zips:/app/zips
+    user: "${UID}:${GID}"
+    restart: unless-stopped
 ```
 
 ## ⁉️ How It Works

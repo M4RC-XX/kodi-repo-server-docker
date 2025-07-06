@@ -5,6 +5,9 @@ services:
     ports:
       - "80:80"
     volumes:
-      - /home/pi/kodi-repository:/app
+      - /home/pi/kodi-repository/input:/app/input
+      - /home/pi/kodi-repository/addons:/app/addons
+      - /home/pi/kodi-repository/web:/app/web
+      - /home/pi/kodi-repository/zips:/app/zips
     user: "${UID}:${GID}"
     restart: unless-stopped
