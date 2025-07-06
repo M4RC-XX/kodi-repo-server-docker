@@ -2,17 +2,14 @@
 
 name: Docker Image CI
 
-# Dieser Workflow wird bei jedem Push auf den 'main'-Branch ausgeführt
 on:
   push:
     branches: [ "main" ]
 
 jobs:
   build_and_publish:
-    # Führt den Job auf einem von GitHub gehosteten Runner aus
     runs-on: ubuntu-latest
 
-    # *** KORREKTUR: Explizite Berechtigungen für den Job definieren ***
     permissions:
       contents: read
       packages: write
