@@ -11,13 +11,13 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 from packaging.version import Version
 
-# --- Konfiguration --------------------------------------------------
+# --- Konfiguration ---------------------------------------------------
 INPUT_DIR = "/app/input"
 ADDONS_DIR = "/app/addons"
 REPO_DIR = "/app/web"
 ARCHIVE_DIR = "/app/zips"
 GENERATOR_SCRIPT = "/app/generator.py"
-# --------------------------------------------------------------------
+# ---------------------------------------------------------------------
 
 def log(message):
     print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] {message}", flush=True)
