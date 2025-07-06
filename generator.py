@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
-# Kodi Repo Generator for Python 3 - Copyright (c) 2024 Loki1979 - Created on 10.02.2024 08:45
 
 import os
 import sys
