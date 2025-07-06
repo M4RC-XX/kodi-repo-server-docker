@@ -4,6 +4,7 @@ import shutil
 import time
 import zipfile
 import subprocess
+import re
 from datetime import datetime
 from xml.etree import ElementTree as ET
 from watchdog.observers import Observer
@@ -19,11 +20,9 @@ GENERATOR_SCRIPT = "/app/generator.py"
 # ---------------------------------------------------------------------
 
 def log(message):
-    """Schreibt eine Nachricht mit Zeitstempel in die Konsole."""
     print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] {message}", flush=True)
 
 def run_generator():
-    """Führt Ihr generator.py Skript aus."""
     log(f"▶️ Führe generator.py aus. Quelle: '{ADDONS_DIR}', Ziel: '{REPO_DIR}'...")
     try:
         process = subprocess.run(
@@ -44,7 +43,6 @@ def run_generator():
         return False
 
 class ZipHandler(FileSystemEventHandler):
-    """Überwacht den input-Ordner und verarbeitet neue ZIP-Dateien."""
     def on_created(self, event):
         if event.is_directory or not event.src_path.endswith('.zip'):
             return
@@ -67,10 +65,13 @@ class ZipHandler(FileSystemEventHandler):
                 with zf.open(xml_path_list[0]) as f:
                     tree = ET.parse(f)
                     addon_id = tree.getroot().get('id')
-                    new_version_str = tree.getroot().get('version')
-                    new_version = Version(new_version_str)
+                    original_version_str = tree.getroot().get('version')
+                    
+                    safe_version_str = original_version_str.replace('~', '-')
+                    comparable_version_str = re.sub(r'~[a-zA-Z_.-]+', '.dev', original_version_str)
+                    new_version = Version(comparable_version_str)
                 
-                log(f"   -> Info aus ZIP: ID='{addon_id}', Version='{new_version}'")
+                log(f"   -> Info aus ZIP: ID='{addon_id}', Version='{new_version}' (Original: '{original_version_str}')")
 
                 existing_version = Version("0.0.0")
                 addon_folder_name = xml_path_list[0].split('/')[0]
@@ -82,13 +83,13 @@ class ZipHandler(FileSystemEventHandler):
                         existing_xml_path = os.path.join(existing_addon_path, 'addon.xml')
                         if os.path.exists(existing_xml_path):
                             tree = ET.parse(existing_xml_path)
-                            existing_version = Version(tree.getroot().get('version'))
+                            existing_comparable_str = re.sub(r'~[a-zA-Z_.-]+', '.dev', tree.getroot().get('version'))
+                            existing_version = Version(existing_comparable_str)
                             log(f"   -> Existierende Version gefunden: {existing_version}")
                     except Exception as e:
                         log(f"   -> WARNUNG: Konnte existierende addon.xml nicht lesen. Fehler: {e}")
 
-                # Definiere den neuen Archiv-Dateinamen basierend auf den XML-Daten
-                new_archive_filename = f"{addon_id}-{new_version_str}.zip"
+                new_archive_filename = f"{addon_id}-{safe_version_str}.zip"
                 archive_path = os.path.join(ARCHIVE_DIR, new_archive_filename)
 
                 if new_version <= existing_version:
@@ -108,7 +109,6 @@ class ZipHandler(FileSystemEventHandler):
                 log("   -> Entpacken erfolgreich.")
 
             if run_generator():
-                # Verschiebe die Datei und nutze den neuen, korrekten Namen
                 shutil.move(original_path, archive_path)
                 log(f"   -> Originaldatei erfolgreich nach '{archive_path}' archiviert.")
                 log(f"✨ Verarbeitung für '{os.path.basename(original_path)}' komplett (Repo aktualisiert).")
@@ -118,11 +118,11 @@ class ZipHandler(FileSystemEventHandler):
         except Exception as e:
             log(f"‼️ EIN UNERWARTETER FEHLER ist aufgetreten: {e}")
 
-# --- HAUPTPROGRAMM ---
+# --- MAIN ---
 if __name__ == "__main__":
     for d in [INPUT_DIR, ADDONS_DIR, REPO_DIR, ARCHIVE_DIR]:
         os.makedirs(d, exist_ok=True)
-    log("Initialisiere Kodi Repository Automator (mit finaler Versionsprüfung & Dateibenennung)...")
+    log("Initialisiere Kodi Repository Automator...")
     run_generator()
     log(f"🚀 Server gestartet. Überwache den Ordner: '{INPUT_DIR}'")
     observer = Observer()

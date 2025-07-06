@@ -37,7 +37,7 @@ docker run -d \
   -p 8008:8008 \
   --user "$(id -u):$(id -g)" \
   -v /home/pi/kodi-repository:/app \
-  --name mein-kodi-repo \
+  --name kodi-repo-server \
   --restart unless-stopped \
   kodi-repo-server
 ```

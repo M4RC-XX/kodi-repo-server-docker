@@ -150,13 +150,10 @@ def create_new_repo(addons_dir, new_repo_dir, hash_algorithm="sha256"):
 			print_to_stdout(f"The file (addons.xml.{hash_algorithm}) could not be created!\n{e}")
 			sys.exit()
 
-		# Komprimiere addons.xml
 		compress_file(os.path.join(new_repo_dir, "addons.xml"))
 
-		# Berechne den Hash für die komprimierte Datei
 		addons_xml_gz_hash = calculate_hash(os.path.join(new_repo_dir, "addons.xml.gz"), hash_algorithm)
 
-		# Speichere den Hash-Wert
 		with open(os.path.join(new_repo_dir, f"addons.xml.gz.{hash_algorithm}"), "wb") as fi:
 			fi.write(f"{addons_xml_gz_hash}  addons.xml.gz".encode("UTF-8"))
 
@@ -173,7 +170,6 @@ def create_new_repo(addons_dir, new_repo_dir, hash_algorithm="sha256"):
 		print_to_stdout(f"No addons in addons directory:\n{addons_dir}\n\n")
 
 if __name__ == "__main__":
-    # Überprüfe, ob die Pfade als Kommandozeilenargumente übergeben wurden
     if len(sys.argv) != 3:
         print("Usage: python generator.py <path_to_addons_directory> <path_to_new_repo_directory>")
         sys.exit(1)
@@ -182,5 +178,4 @@ if __name__ == "__main__":
     new_repo_dir = os.path.normpath(sys.argv[2])
     hash_algorithm = "sha256"
     
-    # Rufe die Hauptfunktion mit den übergebenen Pfaden auf
     create_new_repo(addons_dir, new_repo_dir, hash_algorithm)
