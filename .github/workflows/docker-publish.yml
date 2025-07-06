@@ -1,0 +1,37 @@
+# GitHub Actions Workflow zum Bauen und Veröffentlichen des Docker-Images
+
+name: Docker Image CI
+
+# Dieser Workflow wird bei jedem Push auf den 'main'-Branch ausgeführt
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build_and_publish:
+    # Führt den Job auf einem von GitHub gehosteten Runner aus
+    runs-on: ubuntu-latest
+
+    steps:
+      # Schritt 1: Code aus dem Repository auschecken
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Schritt 2: An der GitHub Container Registry (ghcr.io) anmelden
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          # GITHUB_TOKEN wird automatisch von GitHub erstellt und bereitgestellt
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Schritt 3: Docker-Image bauen und auf ghcr.io veröffentlichen
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          # Taggt das Image mit dem Namen Ihres Repositories
+          # Beispiel: ghcr.io/ihr-benutzername/ihr-projektname:latest
+          tags: ghcr.io/${{ github.repository }}:latest
