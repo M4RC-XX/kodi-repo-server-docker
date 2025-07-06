@@ -1,5 +1,3 @@
-# GitHub Actions Workflow zum Bauen und Veröffentlichen des Docker-Images
-
 name: Docker Image CI
 
 on:
